@@ -156,30 +156,11 @@ SUPPORT_EMAIL = env('SUPPORT_EMAIL')
 CELERY_BROKER_URL = 'amqp://rabbitmq'
 
 CELERY_BEAT_SCHEDULE = {
-    'parse_privatbank': {
-        'task': 'currency.tasks.parse_privatbank',
+    'run_parsing': {
+        'task': 'currency.tasks.run_parsing',
         'schedule': crontab(minute='*/1')
     },
-    'parse_monobank': {
-        'task': 'currency.tasks.parse_monobank',
-        'schedule': crontab(minute='*/1')
-    },
-    'parse_vkurse': {
-        'task': 'currency.tasks.parse_vkurse',
-        'schedule': crontab(minute='*/1')
-    },
-    'parse_minfin': {
-        'task': 'currency.tasks.parse_minfin',
-        'schedule': crontab(minute='*/1')
-    },
-    # 'parse_pumb': {
-    #     'task': 'currency.tasks.parse_pumb',
-    #     'schedule': crontab(minute='*/1')
-    # },
-    # 'parse_oschadbank': {
-    #     'task': 'currency.tasks.parse_oschadbank',
-    #     'schedule': crontab(minute='*/1')
-    # },
+
 }
 
 LOGIN_REDIRECT_URL = reverse_lazy('index')
