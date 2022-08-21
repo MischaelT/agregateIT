@@ -1,10 +1,12 @@
 import asyncio
 from decimal import Decimal
+
 import requests
 
 from bs4 import BeautifulSoup
 
 from django.core.cache import cache
+
 from currency import const
 from currency import model_choices as choices
 from currency.services import get_latest_rates
@@ -12,6 +14,7 @@ from currency.services import get_latest_rates
 
 def round_currency(num):
     return Decimal(num).quantize(Decimal('.01'))
+
 
 def make_tasks() -> list:
 
@@ -46,10 +49,8 @@ async def parse_privatbank() -> None:
 
     rates = response.json()
 
-    available_currency_types = {
-        'USD': choices.TYPE_USD,
-        'EUR': choices.TYPE_EUR,
-    }
+    available_currency_types = {'USD': choices.TYPE_USD,
+                                'EUR': choices.TYPE_EUR, }
 
     for rate in rates:
 
@@ -103,11 +104,9 @@ async def parse_monobank() -> None:
 
     rates = response.json()
 
-    available_currency_codes = {
-        '840': choices.TYPE_USD,
-        '978': choices.TYPE_EUR,
-        '980': choices.TYPE_HRN
-    }
+    available_currency_codes = {'840': choices.TYPE_USD,
+                                '978': choices.TYPE_EUR,
+                                '980': choices.TYPE_HRN}
 
     for rate in rates:
         first_currency_code = str(rate['currencyCodeA'])
@@ -157,10 +156,8 @@ async def parse_vkurse() -> None:
 
     response = requests.get(url)
     json_data = response.json()
-    available_currency_names = {
-        'Dollar': choices.TYPE_USD,
-        'Euro': choices.TYPE_EUR,
-    }
+    available_currency_names = {'Dollar': choices.TYPE_USD,
+                                'Euro': choices.TYPE_EUR, }
 
     currency_names = json_data.keys()
 
@@ -208,10 +205,8 @@ async def parse_minfin() -> None:
         defaults={'name': 'MinFin'},
     )[0]
 
-    urls = {
-        choices.TYPE_USD: 'https://minfin.com.ua/currency/banks/usd/',
-        choices.TYPE_EUR: 'https://minfin.com.ua/currency/banks/eur/',
-        }
+    urls = {choices.TYPE_USD: 'https://minfin.com.ua/currency/banks/usd/',
+            choices.TYPE_EUR: 'https://minfin.com.ua/currency/banks/eur/', }
 
     for currency_name in urls:
 
@@ -260,10 +255,8 @@ async def parse_pumb() -> None:
 
     url = 'https://about.pumb.ua/ru/info/currency_converter'
 
-    available_currency_names = {
-        'USD': choices.TYPE_USD,
-        'EUR': choices.TYPE_EUR,
-    }
+    available_currency_names = {'USD': choices.TYPE_USD,
+                                'EUR': choices.TYPE_EUR, }
 
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')

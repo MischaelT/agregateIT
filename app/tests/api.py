@@ -34,11 +34,9 @@ def test_post_invalid(api_client_auth):
     response = api_client_auth.get(url, json={})
     assert response.status_code == 200
     assert response.json()
-    assert response.json() == {
-        "ask": ["This field is required."],
-        "bid": ["This field is required."],
-        "source": ["This field is required."]
-        }
+    assert response.json() == {"ask": ["This field is required."],
+                               "bid": ["This field is required."],
+                               "source": ["This field is required."]}
 
 
 def test_post_valid(api_client_auth):

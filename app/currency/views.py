@@ -198,11 +198,9 @@ class EmailCreateView(CreateView):
     model = ContactUs
     success_url = reverse_lazy('index')
     template_name = 'contact_us.html'
-    fields = (
-            'email_from',
-            'subject',
-            'message',
-    )  # Форма создается автоматически
+    fields = ('email_from',
+              'subject',
+              'message',)
 
     # form.clean_data - провалидированные данные
     def form_valid(self, form):

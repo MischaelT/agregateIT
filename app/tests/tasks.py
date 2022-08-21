@@ -55,7 +55,7 @@ def test_parse_monobank(mocker):
     request_get_mock.return_value = MagicMock(json=lambda: monobank_response)
 
     parse_monobank()
-    assert Rate.objects.count() == initial_value+3
+    assert Rate.objects.count() == initial_value + 3
 
 
 def test_parse_vkurse(mocker):
@@ -71,15 +71,13 @@ def test_parse_vkurse(mocker):
     request_get_mock.return_value = MagicMock(json=lambda: vkurse_response)
 
     parse_vkurse()
-    assert Rate.objects.count() == initial_value+1
+    assert Rate.objects.count() == initial_value + 1
 
-    vkurse_response = {
-        'Aut': {'buy': '8', 'sale': '17'},
-        'Lira': {'buy': '65', 'sale': '69'},
-        'Rub': {'buy': '0.377', 'sale': '0.398'}
-        }
+    vkurse_response = {'Aut': {'buy': '8', 'sale': '17'},
+                       'Lira': {'buy': '65', 'sale': '69'},
+                       'Rub': {'buy': '0.377', 'sale': '0.398'}}
 
     request_get_mock.return_value = MagicMock(json=lambda: vkurse_response)
 
     parse_vkurse()
-    assert Rate.objects.count() == initial_value+1
+    assert Rate.objects.count() == initial_value + 1
