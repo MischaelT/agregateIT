@@ -11,6 +11,8 @@ from currency import const
 from currency import model_choices as choices
 from currency.services import get_latest_rates
 
+import aiohttp
+
 
 def round_currency(num):
     return Decimal(num).quantize(Decimal('.01'))
@@ -39,15 +41,15 @@ async def parse_privatbank() -> None:
     from currency.models import Rate, Source
 
     url = 'https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5'
-    response = requests.get(url)
-    response.raise_for_status()
 
     source = Source.objects.get_or_create(
         code_name=const.CODE_NAME_PRIVATBANK,
         defaults={'name': 'PrivatBank'},
     )[0]
 
-    rates = response.json()
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
+        async with session.get(url) as response:
+            rates = response.json()
 
     available_currency_types = {'USD': choices.TYPE_USD,
                                 'EUR': choices.TYPE_EUR, }
@@ -99,10 +101,9 @@ async def parse_monobank() -> None:
 
     url = 'https://api.monobank.ua/bank/currency'
 
-    response = requests.get(url)
-    response.raise_for_status()
-
-    rates = response.json()
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
+        async with session.get(url) as response:
+            rates = response.json()
 
     available_currency_codes = {'840': choices.TYPE_USD,
                                 '978': choices.TYPE_EUR,
@@ -154,8 +155,10 @@ async def parse_vkurse() -> None:
 
     url = 'http://vkurse.dp.ua/course.json'
 
-    response = requests.get(url)
-    json_data = response.json()
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
+        async with session.get(url) as response:
+            json_data = response.json()
+
     available_currency_names = {'Dollar': choices.TYPE_USD,
                                 'Euro': choices.TYPE_EUR, }
 
@@ -210,8 +213,9 @@ async def parse_minfin() -> None:
 
     for currency_name in urls:
 
-        response = requests.get(urls.get(currency_name))
-        soup = BeautifulSoup(response.text, 'html.parser')
+        async with aiohttp.ClientSession(raise_for_status=True) as session:
+            async with session.get(urls.get(currency_name)) as response:
+                soup = BeautifulSoup(response.text, 'html.parser')
 
         for span in soup("span"):
             span.decompose()
@@ -258,8 +262,9 @@ async def parse_pumb() -> None:
     available_currency_names = {'USD': choices.TYPE_USD,
                                 'EUR': choices.TYPE_EUR, }
 
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
+        async with session.get(urls.get(currency_name)) as response:
+            soup = BeautifulSoup(response.text, 'html.parser')
 
     table = soup.find('table')
 
